@@ -1,4 +1,4 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useEffect, useMemo } from 'react';
 import { Omnibar, ItemRenderer, ItemListRenderer, ItemPredicate } from '@blueprintjs/select';
 import { IconName, Icon, Menu, MenuItem, InputGroupProps2 } from '@blueprintjs/core';
 import { includesIgnoreCase } from '../../utils/stringUtils';
@@ -12,6 +12,18 @@ const CommandOmmibar = Omnibar.ofType<Command>();
 const CommandBar = () => {
   const [isOpen, setOpen] = useState(true);
   const { command, commandResult, commandHistory, pushCommand, popCommand } = useCommandEngine(root);
+
+  useEffect(() => {
+    const handleKey = (ev: KeyboardEvent) => {
+      if (ev.code === 'Comma' && ev.ctrlKey) {
+        setOpen((v) => !v);
+      }
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => {
+      window.removeEventListener('keydown', handleKey);
+    };
+  }, []);
 
   const inputProps: InputGroupProps2 = useMemo(() => {
     const placeholderCrumbs = (icon: IconName): JSX.Element => {
@@ -59,17 +71,20 @@ const CommandBar = () => {
     }
   }, [commandResult]);
 
-  const handleSelectItem = (command: Command): void => {
-    console.log('select command', command);
-    switch (command.type) {
-      case 'selector':
-        pushCommand(command);
-        return;
-      case 'action':
-        command.action();
-        return;
-    }
-  };
+  const handleSelectItem: (item: Command) => void = useCallback(
+    (command: Command) => {
+      console.log('select command', command);
+      switch (command.type) {
+        case 'selector':
+          pushCommand(command);
+          return;
+        case 'action':
+          command.action();
+          return;
+      }
+    },
+    [pushCommand]
+  );
 
   const itemRenderer: ItemRenderer<Command> = useCallback((command, { handleClick, modifiers, query }) => {
     return (
@@ -92,7 +107,11 @@ const CommandBar = () => {
       );
     }
     if (filteredItems.length === 0) {
-      return <Menu></Menu>;
+      return (
+        <Menu>
+          <MenuItem disabled={true} text="No matching search commands" />
+        </Menu>
+      );
     }
     return <Menu>{filteredItems.map(renderItem)}</Menu>;
   }, []);
