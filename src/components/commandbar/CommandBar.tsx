@@ -1,6 +1,6 @@
 import { useState, useCallback, useMemo } from 'react';
 import { Omnibar, ItemRenderer, ItemListRenderer, ItemPredicate } from '@blueprintjs/select';
-import { Menu, MenuItem, InputGroupProps2 } from '@blueprintjs/core';
+import { IconName, Icon, Menu, MenuItem, InputGroupProps2 } from '@blueprintjs/core';
 import { includesIgnoreCase } from '../../utils/stringUtils';
 import Highlighter from '../Highlighter';
 import useCommandEngine from './useCommandEnging';
@@ -14,35 +14,39 @@ const CommandBar = () => {
   const { command, commandResult, commandHistory, pushCommand, popCommand } = useCommandEngine(root);
 
   const inputProps: InputGroupProps2 = useMemo(() => {
-    // const placeholderCrumbs = (icon: IconName): JSX.Element => {
-    //   const previous = commandHistory[0]?.key !== "root" ? ;
-    //   return (
-    //     <div style={{ lineHeight: '40px' }}>
-    //       {previous && <span>...</span>}
-    //       {previous && <Icon icon="chevron-right" />}
-    //       <span>{command.title}</span>
-    //       <Icon icon={icon} />
-    //     </div>
-    //   );
-    // };
+    const placeholderCrumbs = (icon: IconName): JSX.Element => {
+      const prev = commandHistory[0];
+      const prevPrev = commandHistory[1];
+      const prevPrevPrev = commandHistory[2];
+      return (
+        <div style={{ lineHeight: '40px', color: '#5c7080' }}>
+          {prevPrevPrev && <Icon icon="more" style={{ padding: '0 5px' }} />}
+          {prevPrev && <Icon icon="chevron-right" style={{ padding: '0 5px' }} />}
+          {prevPrev && <span>{prev.title}</span>}
+          {prev && <Icon icon="chevron-right" style={{ padding: '0 5px' }} />}
+          {prev && <span>{command.title}</span>}
+          <Icon icon={icon} style={{ padding: '0 5px' }} />
+        </div>
+      );
+    };
     switch (commandResult.type) {
       case 'loading':
         return {
-          leftIcon: 'time',
+          leftElement: placeholderCrumbs('time'),
           placeholder: 'Loading...',
         };
       case 'success':
         return {
-          leftIcon: 'chevron-right',
+          leftElement: placeholderCrumbs('chevron-right'),
           placeholder: command.placeHolder,
         };
       case 'error':
         return {
-          leftIcon: 'error',
+          leftElement: placeholderCrumbs('error'),
           placeholder: commandResult.error,
         };
     }
-  }, [commandResult, command]);
+  }, [commandResult, command, commandHistory]);
 
   const items = useMemo(() => {
     switch (commandResult.type) {
