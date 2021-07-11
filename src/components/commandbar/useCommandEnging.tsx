@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { SelectorCommand, Command } from './command';
 import { Result, buildLoadingResult, buildSuccessResult, buildErrorResult } from '../../utils/result';
 
@@ -16,27 +16,29 @@ const useCommandEngine = (root: SelectorCommand) => {
         console.error(error);
         setResult(buildErrorResult('Error fetching'));
       });
-  }, [current]);
-  const push = (command: SelectorCommand): void => {
-    setCurrent(command);
-    setHistory([current, ...history]);
-  };
-  const pop = (): SelectorCommand | undefined => {
-    const [first, ...rest] = history;
-    if (!first) {
-      return;
-    }
-    setCurrent(first);
-    setHistory(rest);
-    return first;
-  };
-  return {
-    command: current,
-    commandResult: result,
-    commandHistory: history,
-    pushCommand: push,
-    popCommand: pop,
-  };
+  }, [current, setResult]);
+  return useMemo(() => {
+    const push = (command: SelectorCommand): void => {
+      setCurrent(command);
+      setHistory([current, ...history]);
+    };
+    const pop = (): SelectorCommand | undefined => {
+      const [first, ...rest] = history;
+      if (!first) {
+        return;
+      }
+      setCurrent(first);
+      setHistory(rest);
+      return first;
+    };
+    return {
+      command: current,
+      commandResult: result,
+      commandHistory: history,
+      pushCommand: push,
+      popCommand: pop,
+    };
+  }, [current, history, result]);
 };
 
 export default useCommandEngine;
