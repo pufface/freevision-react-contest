@@ -45,16 +45,19 @@ const CommandBar = () => {
       case 'loading':
         return {
           leftElement: placeholderCrumbs('time'),
+          leftIcon: null,
           placeholder: 'Loading...',
         };
       case 'success':
         return {
           leftElement: placeholderCrumbs('chevron-right'),
+          leftIcon: null,
           placeholder: command.placeHolder,
         };
       case 'error':
         return {
           leftElement: placeholderCrumbs('error'),
+          leftIcon: null,
           placeholder: commandResult.error,
         };
     }
