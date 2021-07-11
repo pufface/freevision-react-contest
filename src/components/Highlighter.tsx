@@ -21,4 +21,3 @@ const Highlighter: React.FC<HighliterProps> = ({ text, query }) => {
 };
 
 export default Highlighter;
-export { createQueryRegExp };
