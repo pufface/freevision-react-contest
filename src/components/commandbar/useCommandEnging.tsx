@@ -6,6 +6,7 @@ const useCommandEngine = (root: SelectorCommand) => {
   const [current, setCurrent] = useState(root);
   const [history, setHistory] = useState<SelectorCommand[]>([]);
   const [result, setResult] = useState<Result<Command[], string>>(buildLoadingResult());
+
   useEffect(() => {
     setResult(buildLoadingResult());
     Promise.resolve(current.options())
@@ -17,6 +18,7 @@ const useCommandEngine = (root: SelectorCommand) => {
         setResult(buildErrorResult('Error fetching'));
       });
   }, [current, setResult]);
+
   return useMemo(() => {
     const push = (command: SelectorCommand): void => {
       setCurrent(command);
