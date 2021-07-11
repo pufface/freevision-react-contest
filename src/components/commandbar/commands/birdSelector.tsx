@@ -30,12 +30,12 @@ const birdSelector: SelectorCommand = {
   title: 'Show birds',
   key: 'showBirds',
   placeHolder: 'Select bird...',
-  options: () => {
+  options: async () => {
     const url = 'http://localhost:3001/birds';
-    return fetch(url)
-      .then((result) => result.json())
-      .then((objects) => objects.map(parseBird))
-      .then((birds) => birds.map(buildShowBirdAction));
+    const result = await fetch(url);
+    const objects = await result.json();
+    const birds = objects.map(parseBird);
+    return birds.map(buildShowBirdAction);
   },
 };
 
