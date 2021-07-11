@@ -4,75 +4,47 @@ import { Menu, MenuItem, InputGroupProps2 } from '@blueprintjs/core';
 import { includesIgnoreCase } from '../../utils/stringUtils';
 import Highlighter from '../Highlighter';
 import resultFactory, { Result } from '../../utils/result';
+import { ActionCommand, SelectorCommand, Command } from './command';
 
-type CommandBase = {
-  title: string;
-  key: string;
-  label?: string;
-};
-
-type Command = SelectorCommand | ActionCommand;
-
-type SelectorCommand = CommandBase & {
-  type: 'selector';
-  placeHolder: string;
-  getOptions: () => Promise<Command[]>;
-};
-
-type ActionCommand = CommandBase & {
-  type: 'action';
-  action: () => Promise<void>;
-};
-
-const goToPageAction = (title: string, url: string): ActionCommand => {
-  return {
-    type: 'action',
-    title,
-    key: title.toLowerCase(),
-    action() {
-      return Promise.resolve().then(() => console.log(url));
-    },
-  };
-};
+const goToPageAction = (title: string, url: string): ActionCommand => ({
+  type: 'action',
+  title,
+  key: title,
+  action() {
+    return Promise.resolve().then(() => console.log(url));
+  },
+});
 
 const goToPageSelector: SelectorCommand = {
   type: 'selector',
   title: 'Go to',
   key: 'goTo',
   placeHolder: 'Select page...',
-  getOptions: () =>
-    Promise.resolve([
-      goToPageAction('Home', '/'),
-      goToPageAction('Page one', '/one'),
-      goToPageAction('Page two', '/two'),
-    ]),
+  options: () => [goToPageAction('Home', '/'), goToPageAction('Page one', '/one'), goToPageAction('Page two', '/two')],
 };
 
-const changeApiUrlAction = (title: string, url?: string): ActionCommand => {
-  return {
-    type: 'action',
-    title,
-    label: url,
-    key: title.toLowerCase(),
-    action() {
-      return Promise.resolve().then(() => console.log(title, url));
-    },
-  };
-};
+const changeApiUrlAction = (title: string, url?: string): ActionCommand => ({
+  type: 'action',
+  title,
+  label: url,
+  key: title,
+  action() {
+    return Promise.resolve().then(() => console.log(title, url));
+  },
+});
 
 const changeApiUrlSelector: SelectorCommand = {
   type: 'selector',
   title: 'Change API url',
   key: 'changeApiUrl',
   placeHolder: 'Select environment...',
-  getOptions: () =>
-    Promise.resolve([
-      changeApiUrlAction('reset'),
-      changeApiUrlAction('localhost', 'http://localhost:3000'),
-      changeApiUrlAction('staging', 'https://staging.fake-application.net'),
-      changeApiUrlAction('staging2', 'https://staging2.fake-application.net'),
-      changeApiUrlAction('production', 'https://production.fake-application.net'),
-    ]),
+  options: () => [
+    changeApiUrlAction('reset'),
+    changeApiUrlAction('localhost', 'http://localhost:3000'),
+    changeApiUrlAction('staging', 'https://staging.fake-application.net'),
+    changeApiUrlAction('staging2', 'https://staging2.fake-application.net'),
+    changeApiUrlAction('production', 'https://production.fake-application.net'),
+  ],
 };
 
 const toggleLocalizationAction: ActionCommand = {
@@ -88,10 +60,7 @@ const root: SelectorCommand = {
   key: 'root',
   label: '',
   placeHolder: 'Enter command...',
-  getOptions: () =>
-    new Promise((resolve) => {
-      setTimeout(resolve, 1000);
-    }).then(() => [goToPageSelector, changeApiUrlSelector, toggleLocalizationAction]),
+  options: () => [goToPageSelector, changeApiUrlSelector, toggleLocalizationAction],
 };
 
 const ControlMenu = ({ text }: { text: string }) => (
@@ -108,8 +77,7 @@ const useCommandEngine = (root: SelectorCommand) => {
   const [result, setResult] = useState<Result<Command[], string>>(resultFactory.loading());
   useEffect(() => {
     setResult(resultFactory.loading());
-    current
-      .getOptions()
+    Promise.resolve(current.options())
       .then((options) => {
         setResult(resultFactory.success(options));
       })
