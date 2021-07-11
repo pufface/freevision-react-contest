@@ -37,5 +37,3 @@ Comments to solution:
   - birds filtering locally
   - added commands multilevel support with history and go back via esc
   - tuned types Result and Command to support exhaustive switches by using discriminated unions
-- next todo, not done due to run out of the time
-  - not well performant when showing 1000 items, need to implement some kind of limit or pagination
