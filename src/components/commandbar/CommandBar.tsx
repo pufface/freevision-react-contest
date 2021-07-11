@@ -135,6 +135,7 @@ const CommandBar = () => {
       isOpen={isOpen}
       onClose={handleClose}
       items={items}
+      resetOnSelect
       itemsEqual="key"
       onItemSelect={handleSelectItem}
       itemPredicate={itemPredicate}
