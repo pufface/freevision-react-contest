@@ -14,19 +14,19 @@ type ResultLoading = {
 
 type Result<T, E> = ResultLoading | ResultSuccess<T> | ResultError<E>;
 
-const resultFactory = {
-  loading: (): ResultLoading => ({
-    type: 'loading',
-  }),
-  success: <T,>(value: T): ResultSuccess<T> => ({
-    type: 'success',
-    value,
-  }),
-  error: <E,>(error: E): ResultError<E> => ({
-    type: 'error',
-    error,
-  }),
-};
+const buildLoadingResult = (): ResultLoading => ({
+  type: 'loading',
+});
 
-export default resultFactory;
+const buildSuccessResult = <T,>(value: T): ResultSuccess<T> => ({
+  type: 'success',
+  value,
+});
+
+const buildErrorResult = <E,>(error: E): ResultError<E> => ({
+  type: 'error',
+  error,
+});
+
+export { buildLoadingResult, buildSuccessResult, buildErrorResult };
 export type { Result, ResultLoading, ResultSuccess, ResultError };

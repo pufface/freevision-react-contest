@@ -1,67 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Omnibar } from '@blueprintjs/select';
 import { Menu, MenuItem, InputGroupProps2 } from '@blueprintjs/core';
 import { includesIgnoreCase } from '../../utils/stringUtils';
 import Highlighter from '../Highlighter';
-import resultFactory, { Result } from '../../utils/result';
-import { ActionCommand, SelectorCommand, Command } from './command';
-
-const goToPageAction = (title: string, url: string): ActionCommand => ({
-  type: 'action',
-  title,
-  key: title,
-  action() {
-    return Promise.resolve().then(() => console.log(url));
-  },
-});
-
-const goToPageSelector: SelectorCommand = {
-  type: 'selector',
-  title: 'Go to',
-  key: 'goTo',
-  placeHolder: 'Select page...',
-  options: () => [goToPageAction('Home', '/'), goToPageAction('Page one', '/one'), goToPageAction('Page two', '/two')],
-};
-
-const changeApiUrlAction = (title: string, url?: string): ActionCommand => ({
-  type: 'action',
-  title,
-  label: url,
-  key: title,
-  action() {
-    return Promise.resolve().then(() => console.log(title, url));
-  },
-});
-
-const changeApiUrlSelector: SelectorCommand = {
-  type: 'selector',
-  title: 'Change API url',
-  key: 'changeApiUrl',
-  placeHolder: 'Select environment...',
-  options: () => [
-    changeApiUrlAction('reset'),
-    changeApiUrlAction('localhost', 'http://localhost:3000'),
-    changeApiUrlAction('staging', 'https://staging.fake-application.net'),
-    changeApiUrlAction('staging2', 'https://staging2.fake-application.net'),
-    changeApiUrlAction('production', 'https://production.fake-application.net'),
-  ],
-};
-
-const toggleLocalizationAction: ActionCommand = {
-  type: 'action',
-  title: 'Toggle localization',
-  key: 'toggleLocalization',
-  action: () => Promise.resolve().then(() => console.log('toggle')),
-};
-
-const root: SelectorCommand = {
-  type: 'selector',
-  title: '',
-  key: 'root',
-  label: '',
-  placeHolder: 'Enter command...',
-  options: () => [goToPageSelector, changeApiUrlSelector, toggleLocalizationAction],
-};
+import useCommandEngine from './useCommandEnging';
+import { Command } from './command';
+import root from './commands/root';
 
 const ControlMenu = ({ text }: { text: string }) => (
   <Menu>
@@ -70,43 +14,6 @@ const ControlMenu = ({ text }: { text: string }) => (
 );
 
 const CommandOmmibar = Omnibar.ofType<Command>();
-
-const useCommandEngine = (root: SelectorCommand) => {
-  const [current, setCurrent] = useState(root);
-  const [history, setHistory] = useState<SelectorCommand[]>([]);
-  const [result, setResult] = useState<Result<Command[], string>>(resultFactory.loading());
-  useEffect(() => {
-    setResult(resultFactory.loading());
-    Promise.resolve(current.options())
-      .then((options) => {
-        setResult(resultFactory.success(options));
-      })
-      .catch((error) => {
-        console.error(error);
-        setResult(resultFactory.error('Error fetching'));
-      });
-  }, [current]);
-  const push = (command: SelectorCommand): void => {
-    setCurrent(command);
-    setHistory([current, ...history]);
-  };
-  const pop = (): SelectorCommand | undefined => {
-    const [first, ...rest] = history;
-    if (!first) {
-      return;
-    }
-    setCurrent(first);
-    setHistory(rest);
-    return first;
-  };
-  return {
-    command: current,
-    commandResult: result,
-    commandHistory: history,
-    pushCommand: push,
-    popCommand: pop,
-  };
-};
 
 const CommandBar = () => {
   const [isOpen, setOpen] = useState(true);
