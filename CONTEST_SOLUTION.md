@@ -22,6 +22,8 @@ In general:
 - lot of nits and notes can be ignored
 - having different taste for style and formatting, depends on project conventions
 - some comments can be invalid as I do not know original requirements
+- arrow fns vs classic fns schizofrenia, just be consistent
+- import wildcards
 
 ## Part 2
 
