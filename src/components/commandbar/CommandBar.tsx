@@ -3,6 +3,7 @@ import { Omnibar } from '@blueprintjs/select';
 import { Menu, MenuItem, InputGroupProps2 } from '@blueprintjs/core';
 import { includesIgnoreCase } from '../../utils/stringUtils';
 import Highlighter from '../Highlighter';
+import resultFactory, { Result } from '../../utils/result';
 
 type CommandBase = {
   title: string;
@@ -99,46 +100,22 @@ const ControlMenu = ({ text }: { text: string }) => (
   </Menu>
 );
 
-type ResultSuccess<T> = {
-  type: 'success';
-  value: T;
-};
-
-type ResultError<E> = {
-  type: 'error';
-  error: E;
-};
-
-type Loading = {
-  type: 'loading';
-};
-
-type Result<T, E> = Loading | ResultSuccess<T> | ResultError<E>;
-
 const CommandOmmibar = Omnibar.ofType<Command>();
 
 const useCommandEngine = (root: SelectorCommand) => {
   const [current, setCurrent] = useState(root);
   const [history, setHistory] = useState<SelectorCommand[]>([]);
-  const [result, setResult] = useState<Result<Command[], string>>({ type: 'loading' });
+  const [result, setResult] = useState<Result<Command[], string>>(resultFactory.loading());
   useEffect(() => {
-    setResult({
-      type: 'loading',
-    });
+    setResult(resultFactory.loading());
     current
       .getOptions()
       .then((options) => {
-        setResult({
-          type: 'success',
-          value: options,
-        });
+        setResult(resultFactory.success(options));
       })
       .catch((error) => {
         console.error(error);
-        setResult({
-          type: 'error',
-          error: 'Error fetching',
-        });
+        setResult(resultFactory.error('Error fetching'));
       });
   }, [current]);
   const push = (command: SelectorCommand): void => {
