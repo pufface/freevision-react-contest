@@ -31,11 +31,11 @@ Comments to solution:
 
 - new Highlighter logic
 - new CommandBar
-  - extracted commands logic with history to useCommandEngine hook
+  - extracted commands logic to useCommandEngine hook
   - blueprint omnibar works only as renderer with search logic
   - birds fetching is done as whole json, partial fetching for 40KB is overkill
-  - birds filtered locally
-  - added multilevel support with command history and go back
+  - birds filtering locally
+  - added commands multilevel support with history and go back via esc
   - tuned types Result and Command to support exhaustive switches by using discriminated unions
 - next todo, not done due to run out of the time
   - not well performant when showing 1000 items, need to implement some kind of limit or pagination
