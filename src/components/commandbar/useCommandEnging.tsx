@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import { SelectorCommand, Command } from './command';
 import { Result, buildLoadingResult, buildSuccessResult, buildErrorResult } from '../../utils/result';
 
@@ -19,28 +19,26 @@ const useCommandEngine = (root: SelectorCommand) => {
       });
   }, [current, setResult]);
 
-  return useMemo(() => {
-    const push = (command: SelectorCommand): void => {
-      setCurrent(command);
-      setHistory([current, ...history]);
-    };
-    const pop = (): SelectorCommand | undefined => {
-      const [first, ...rest] = history;
-      if (!first) {
-        return;
-      }
-      setCurrent(first);
-      setHistory(rest);
-      return first;
-    };
-    return {
-      command: current,
-      commandResult: result,
-      commandHistory: history,
-      pushCommand: push,
-      popCommand: pop,
-    };
-  }, [current, history, result]);
+  const push = (command: SelectorCommand): void => {
+    setCurrent(command);
+    setHistory([current, ...history]);
+  };
+  const pop = (): SelectorCommand | undefined => {
+    const [first, ...rest] = history;
+    if (!first) {
+      return;
+    }
+    setCurrent(first);
+    setHistory(rest);
+    return first;
+  };
+  return {
+    command: current,
+    commandResult: result,
+    commandHistory: history,
+    pushCommand: push,
+    popCommand: pop,
+  };
 };
 
 export default useCommandEngine;
