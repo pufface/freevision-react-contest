@@ -4,6 +4,7 @@ import { Route } from 'react-router';
 import { Switch } from 'react-router';
 import './App.css';
 import Omnibar from './components/omnibar';
+import CommandBar from './components/commandbar/CommandBar';
 import PageHome from './pages/PageHome';
 import PageOne from './pages/PageOne';
 import PageTwo from './pages/PageTwo';
@@ -19,6 +20,7 @@ function App() {
             <Route component={PageHome} />
           </Switch>
           <Omnibar />
+          <CommandBar />
         </div>
       </AppConfigContextProvider>
     </BrowserRouter>
