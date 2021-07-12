@@ -7,15 +7,12 @@ const useCommandEngine = <T,>(root: SelectorCommand<T>, context: T) => {
   const [history, setHistory] = useState<SelectorCommand<T>[]>([]);
   const [result, setResult] = useState<Result<Command<T>[], string>>(buildLoadingResult());
 
-  console.log('useCommand', root, current, result);
-
   useEffect(() => {
-    console.log('useEffect');
     setResult(buildLoadingResult());
     Promise.resolve(current.options(context))
       .then((options) => setResult(buildSuccessResult(options)))
       .catch(() => setResult(buildErrorResult('Error fetching')));
-  }, [root, current, context]);
+  }, [current, context]);
 
   const push = (command: SelectorCommand<T>): void => {
     setCurrent(command);
