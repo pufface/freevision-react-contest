@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Position, Toaster } from '@blueprintjs/core';
 import { useConfig } from '../hooks/useConfig';
@@ -15,9 +16,11 @@ const AppToaster = Toaster.create({
 const CommandBar = () => {
   const history = useHistory();
   const config = useConfig();
-  const showToast: ShowToaster = (text) => AppToaster.show({ message: text });
-  const root = buildRootSelector(history, config, showToast);
-  console.log(config.config.showLangKeys);
+  const root = useMemo(() => {
+    const showToast: ShowToaster = (text) => AppToaster.show({ message: text });
+    return buildRootSelector(history, config, showToast);
+  }, [history, config]);
+
   return <CommandBarEngine root={root} />;
 };
 

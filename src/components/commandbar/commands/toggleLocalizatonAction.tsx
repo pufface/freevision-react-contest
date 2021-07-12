@@ -6,7 +6,6 @@ const buildToggleLocalizationAction = (configContext: IAppConfigContext): Action
   title: 'Toggle localization',
   key: 'toggleLocalization',
   action: () => {
-    console.log(configContext.config.showLangKeys);
     configContext.set('showLangKeys', !configContext.config.showLangKeys);
   },
 });
