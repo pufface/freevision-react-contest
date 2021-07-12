@@ -32,7 +32,7 @@ const useCommandEngine = <T,>(root: SelectorCommand<T>, context: T) => {
   };
 
   const setRoot = (root: SelectorCommand<T>) => {
-    setCurrent(root);
+    setCurrent({ ...root });
     setHistory([]);
     setResult(buildLoadingResult());
   };
