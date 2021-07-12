@@ -10,16 +10,10 @@ const createQueryRegExp = (query: string): RegExp => {
   return RegExp(`(${higliterExpRaw})`, 'gi');
 };
 
-const equalsIgnorCase = (text: string, query: string): boolean => {
-  const normalizedText = text.toLowerCase();
-  const normalizedQuery = query.toLowerCase();
-  return normalizedText === normalizedQuery;
-};
-
 const includesIgnoreCase = (text: string, query: string): boolean => {
   const normalizedText = text.toLowerCase();
   const normalizedQuery = query.toLowerCase();
   return normalizedText.indexOf(normalizedQuery) >= 0;
 };
 
-export { escapeRegExp, createQueryRegExp, equalsIgnorCase, includesIgnoreCase };
+export { escapeRegExp, createQueryRegExp, includesIgnoreCase };
