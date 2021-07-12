@@ -1,24 +1,23 @@
+import { History } from '../CommandBar';
 import { ActionCommand, SelectorCommand } from '../command';
 
-const buildGoToPageAction = (title: string, url: string): ActionCommand => ({
-  type: 'action',
-  title,
-  key: title,
-  action() {
-    return Promise.resolve().then(() => console.log(url));
-  },
-});
+const buildGoToPageSelector = (history: History): SelectorCommand => {
+  const buildAction = (title: string, url: string): ActionCommand => ({
+    type: 'action',
+    title,
+    key: title,
+    action() {
+      history.push(url);
+    },
+  });
 
-const goToPageSelector: SelectorCommand = {
-  type: 'selector',
-  title: 'Go to',
-  key: 'goTo',
-  placeHolder: 'Select page...',
-  options: () => [
-    buildGoToPageAction('Home', '/'),
-    buildGoToPageAction('Page one', '/one'),
-    buildGoToPageAction('Page two', '/two'),
-  ],
+  return {
+    type: 'selector',
+    title: 'Go to',
+    key: 'goTo',
+    placeHolder: 'Select page...',
+    options: () => [buildAction('Home', '/'), buildAction('Page one', '/one'), buildAction('Page two', '/two')],
+  };
 };
 
-export default goToPageSelector;
+export { buildGoToPageSelector };

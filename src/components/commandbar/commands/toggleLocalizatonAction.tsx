@@ -1,10 +1,14 @@
+import { IAppConfigContext } from '../../hooks/useConfig';
 import { ActionCommand } from '../command';
 
-const toggleLocalizationAction: ActionCommand = {
+const buildToggleLocalizationAction = (configContext: IAppConfigContext): ActionCommand => ({
   type: 'action',
   title: 'Toggle localization',
   key: 'toggleLocalization',
-  action: () => Promise.resolve().then(() => console.log('toggle')),
-};
+  action: () => {
+    console.log(configContext.config.showLangKeys);
+    configContext.set('showLangKeys', !configContext.config.showLangKeys);
+  },
+});
 
-export default toggleLocalizationAction;
+export { buildToggleLocalizationAction };

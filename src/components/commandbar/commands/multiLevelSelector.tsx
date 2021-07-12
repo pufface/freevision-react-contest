@@ -1,18 +1,19 @@
 import { Command, SelectorCommand } from '../command';
+import { ShowToaster } from '../CommandBar';
 
 const halfSplitter = <T,>(input: T[]) => {
   const length = input.length;
   return [input.slice(0, length / 2), input.slice(length / 2)];
 };
 
-const buildBinarySelect = (items: string[]): Command[] => {
+const buildBinarySelect = (items: string[], showToast: ShowToaster): Command[] => {
   if (items.length <= 4) {
     return items.map((item) => ({
       type: 'action',
       title: item,
       key: item,
       action: () => {
-        console.log('Selected', item);
+        showToast(item);
       },
     }));
   }
@@ -23,14 +24,14 @@ const buildBinarySelect = (items: string[]): Command[] => {
       title: `Select ${first[0]} - ${first[first.length - 1]}`,
       key: `Select ${first[0]} - ${first[first.length - 1]}`,
       placeHolder: 'Binary select',
-      options: () => buildBinarySelect(first),
+      options: () => buildBinarySelect(first, showToast),
     },
     {
       type: 'selector',
       title: `Select ${second[0]} - ${second[second.length - 1]}`,
       key: `Select ${second[0]} - ${second[second.length - 1]}`,
       placeHolder: 'Binary select',
-      options: () => buildBinarySelect(second),
+      options: () => buildBinarySelect(second, showToast),
     },
   ];
 };
@@ -64,12 +65,12 @@ const alphabet = [
   'z',
 ];
 
-const multiLevelSelector: SelectorCommand = {
+const buildMultiLevelSelector = (showToast: ShowToaster): SelectorCommand => ({
   type: 'selector',
   title: `Binary selector`,
   key: `binarySelector`,
   placeHolder: 'Select option...',
-  options: () => buildBinarySelect(alphabet),
-};
+  options: () => buildBinarySelect(alphabet, showToast),
+});
 
-export default multiLevelSelector;
+export { buildMultiLevelSelector };
