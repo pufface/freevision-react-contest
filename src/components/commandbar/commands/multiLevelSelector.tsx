@@ -1,4 +1,4 @@
-import { Command, SelectorCommand } from '../command';
+import { Command, SelectorCommand } from '../engine/command';
 import { ShowToaster } from '../CommandBar';
 
 const halfSplitter = <T,>(input: T[]) => {

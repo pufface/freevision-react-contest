@@ -2,7 +2,7 @@ import { useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Position, Toaster } from '@blueprintjs/core';
 import { useConfig } from '../hooks/useConfig';
-import CommandBarEngine from './CommandBarEngine';
+import CommandBarEngine from './engine/CommandBarEngine';
 import { buildRootSelector } from './commands/rootSelector';
 
 type History = ReturnType<typeof useHistory>;

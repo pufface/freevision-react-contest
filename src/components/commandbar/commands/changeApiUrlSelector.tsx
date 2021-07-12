@@ -1,5 +1,5 @@
 import { IAppConfigContext } from '../../hooks/useConfig';
-import { ActionCommand, SelectorCommand } from '../command';
+import { ActionCommand, SelectorCommand } from '../engine/command';
 
 const buildChangeApiUrlSelector = (configContext: IAppConfigContext): SelectorCommand => {
   const buildAction = (title: string, url?: string): ActionCommand => ({

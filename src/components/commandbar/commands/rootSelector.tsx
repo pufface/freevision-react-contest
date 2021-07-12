@@ -1,5 +1,5 @@
 import { History, ShowToaster } from '../CommandBar';
-import { SelectorCommand } from '../command';
+import { SelectorCommand } from '../engine/command';
 import { buildGoToPageSelector } from './goToPageSelector';
 import { buildChangeApiUrlSelector } from './changeApiUrlSelector';
 import { IAppConfigContext } from '../../hooks/useConfig';

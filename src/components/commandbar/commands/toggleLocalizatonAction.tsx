@@ -1,5 +1,5 @@
 import { IAppConfigContext } from '../../hooks/useConfig';
-import { ActionCommand } from '../command';
+import { ActionCommand } from '../engine/command';
 
 const buildToggleLocalizationAction = (configContext: IAppConfigContext): ActionCommand => ({
   type: 'action',

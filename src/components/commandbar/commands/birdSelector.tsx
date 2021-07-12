@@ -1,4 +1,4 @@
-import { SelectorCommand, ActionCommand } from '../command';
+import { SelectorCommand, ActionCommand } from '../engine/command';
 import { ShowToaster } from '../CommandBar';
 
 type Bird = {

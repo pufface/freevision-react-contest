@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { SelectorCommand, Command } from './command';
-import { Result, buildLoadingResult, buildSuccessResult, buildErrorResult } from '../../utils/result';
+import { Result, buildLoadingResult, buildSuccessResult, buildErrorResult } from '../../../utils/result';
 
 const useCommandEngine = (root: SelectorCommand) => {
   const [current, setCurrent] = useState(root);

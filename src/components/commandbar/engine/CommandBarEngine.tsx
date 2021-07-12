@@ -1,8 +1,8 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Omnibar } from '@blueprintjs/select';
 import { IconName, Icon, Menu, MenuItem, InputGroupProps2 } from '@blueprintjs/core';
-import { includesIgnoreCase } from '../../utils/stringUtils';
-import Highlighter from '../Highlighter';
+import { includesIgnoreCase } from '../../../utils/stringUtils';
+import Highlighter from '../../Highlighter';
 import useCommandEngine from './useCommandEnging';
 import { Command, SelectorCommand } from './command';
 

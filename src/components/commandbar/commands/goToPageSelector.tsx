@@ -1,5 +1,5 @@
 import { History } from '../CommandBar';
-import { ActionCommand, SelectorCommand } from '../command';
+import { ActionCommand, SelectorCommand } from '../engine/command';
 
 const buildGoToPageSelector = (history: History): SelectorCommand => {
   const buildAction = (title: string, url: string): ActionCommand => ({
