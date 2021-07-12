@@ -10,34 +10,37 @@ const useCommandEngine = (root: SelectorCommand) => {
   useEffect(() => {
     setResult(buildLoadingResult());
     Promise.resolve(current.options())
-      .then((options) => {
-        setResult(buildSuccessResult(options));
-      })
-      .catch((error) => {
-        console.error(error);
-        setResult(buildErrorResult('Error fetching'));
-      });
-  }, [current, setResult]);
+      .then((options) => setResult(buildSuccessResult(options)))
+      .catch(() => setResult(buildErrorResult('Error fetching')));
+  }, [current]);
 
   const push = (command: SelectorCommand): void => {
     setCurrent(command);
     setHistory([current, ...history]);
   };
-  const pop = (): SelectorCommand | undefined => {
+
+  const pop = (): void => {
     const [first, ...rest] = history;
     if (!first) {
       return;
     }
     setCurrent(first);
     setHistory(rest);
-    return first;
   };
+
+  const setRoot = (root: SelectorCommand) => {
+    setCurrent(root);
+    setHistory([]);
+    setResult(buildLoadingResult);
+  };
+
   return {
     command: current,
     commandResult: result,
     commandHistory: history,
     pushCommand: push,
     popCommand: pop,
+    setRootCommand: setRoot,
   };
 };
 
