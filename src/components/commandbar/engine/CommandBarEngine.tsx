@@ -9,12 +9,12 @@ import { Command, SelectorCommand } from './command';
 const CommandOmmibar = Omnibar.ofType<Command>();
 
 type CommandBarEngineProps = {
-  root: SelectorCommand;
+  rootCommand: SelectorCommand;
 };
 
-const CommandBarEngine: React.FC<CommandBarEngineProps> = ({ root }) => {
+const CommandBarEngine: React.FC<CommandBarEngineProps> = ({ rootCommand }) => {
   const [isOpen, setOpen] = useState(false);
-  const { command, commandResult, commandHistory, pushCommand, popCommand } = useCommandEngine(root);
+  const { command, commandResult, commandHistory, pushCommand, popCommand } = useCommandEngine(rootCommand);
 
   useEffect(() => {
     const handleKey = (ev: KeyboardEvent) => {

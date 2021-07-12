@@ -16,12 +16,12 @@ const AppToaster = Toaster.create({
 const CommandBar = () => {
   const history = useHistory();
   const config = useConfig();
-  const root = useMemo(() => {
+  const rootCommand = useMemo(() => {
     const showToast: ShowToaster = (text) => AppToaster.show({ message: text });
     return buildRootSelector(history, config, showToast);
   }, [history, config]);
 
-  return <CommandBarEngine root={root} />;
+  return <CommandBarEngine rootCommand={rootCommand} />;
 };
 
 export default CommandBar;
