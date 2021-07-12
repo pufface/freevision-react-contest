@@ -13,12 +13,12 @@ type CommandBarEngineProps = {
 };
 
 const CommandBarEngine: React.FC<CommandBarEngineProps> = ({ root }) => {
-  const [isOpen, setOpen] = useState(true);
+  const [isOpen, setOpen] = useState(false);
   const { command, commandResult, commandHistory, pushCommand, popCommand } = useCommandEngine(root);
 
   useEffect(() => {
     const handleKey = (ev: KeyboardEvent) => {
-      if (ev.code === 'Comma' && ev.ctrlKey) {
+      if (ev.code === 'Period' && ev.ctrlKey) {
         setOpen((v) => !v);
       }
     };
