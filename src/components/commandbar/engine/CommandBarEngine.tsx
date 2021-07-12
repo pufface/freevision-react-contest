@@ -91,8 +91,6 @@ const CommandBarEngine = <T,>({ rootCommand, context }: CommandBarEngineProps<T>
         }
       }}
       items={commandResult.type === 'success' ? commandResult.value : []}
-      resetOnSelect
-      resetOnQuery
       itemsEqual="key"
       onItemSelect={(selectedCommand) => {
         if (selectedCommand.type === 'selector') {
