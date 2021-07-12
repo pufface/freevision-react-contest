@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Omnibar } from '@blueprintjs/select';
 import { IconName, Icon, Menu, MenuItem, InputGroupProps2 } from '@blueprintjs/core';
 import { includesIgnoreCase } from '../../../utils/stringUtils';
