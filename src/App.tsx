@@ -1,6 +1,5 @@
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import { AppConfigContextProvider } from './components/hooks/useConfig';
-import Omnibar from './components/omnibar';
 import CommandBar from './components/commandbar/CommandBar';
 import PageHome from './pages/PageHome';
 import PageOne from './pages/PageOne';
@@ -16,7 +15,6 @@ const App = () => (
           <Route path="/two" component={PageTwo} />
           <Route component={PageHome} />
         </Switch>
-        <Omnibar />
         <CommandBar />
       </div>
     </AppConfigContextProvider>
