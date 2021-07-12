@@ -1,23 +1,21 @@
-import { History } from '../CommandBar';
+import { CommandContext } from '../CommandBar';
 import { ActionCommand, SelectorCommand } from '../engine/command';
 
-const buildGoToPageSelector = (history: History): SelectorCommand => {
-  const buildAction = (title: string, url: string): ActionCommand => ({
-    type: 'action',
-    title,
-    key: title,
-    action() {
-      history.push(url);
-    },
-  });
+const buildAction = (title: string, url: string): ActionCommand<CommandContext> => ({
+  type: 'action',
+  title,
+  key: title,
+  action({ history }) {
+    history.push(url);
+  },
+});
 
-  return {
-    type: 'selector',
-    title: 'Go to',
-    key: 'goTo',
-    placeHolder: 'Select page...',
-    options: () => [buildAction('Home', '/'), buildAction('Page one', '/one'), buildAction('Page two', '/two')],
-  };
+const goToPageSelector: SelectorCommand<CommandContext> = {
+  type: 'selector',
+  title: 'Go to',
+  key: 'goTo',
+  placeHolder: 'Select page...',
+  options: () => [buildAction('Home', '/'), buildAction('Page one', '/one'), buildAction('Page two', '/two')],
 };
 
-export { buildGoToPageSelector };
+export default goToPageSelector;

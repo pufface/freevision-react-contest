@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Omnibar } from '@blueprintjs/select';
 import { IconName, Icon, Menu, MenuItem, InputGroupProps2 } from '@blueprintjs/core';
 import { includesIgnoreCase } from '../../../utils/stringUtils';
@@ -6,28 +6,40 @@ import Highlighter from '../../Highlighter';
 import useCommandEngine from './useCommandEnging';
 import { Command, SelectorCommand } from './command';
 
-const CommandOmmibar = Omnibar.ofType<Command>();
-
-type CommandBarEngineProps = {
-  rootCommand: SelectorCommand;
+type CommandBarEngineProps<T> = {
+  rootCommand: SelectorCommand<T>;
+  context: T;
 };
 
-const CommandBarEngine: React.FC<CommandBarEngineProps> = ({ rootCommand }) => {
+const CommandBarEngine = <T,>({ rootCommand, context }: CommandBarEngineProps<T>) => {
   const [isOpen, setOpen] = useState(false);
-  const { command, commandResult, commandHistory, pushCommand, popCommand, setRootCommand } =
-    useCommandEngine(rootCommand);
+  const { command, commandResult, commandHistory, pushCommand, popCommand, setRootCommand } = useCommandEngine(
+    rootCommand,
+    context
+  );
+
+  const CommandOmmibar = Omnibar.ofType<Command<T>>();
+
+  const close = useCallback(() => {
+    setOpen(false);
+    setRootCommand(rootCommand);
+  }, [setRootCommand, rootCommand]);
 
   useEffect(() => {
     const handleKey = (ev: KeyboardEvent) => {
       if (ev.code === 'Period' && ev.ctrlKey) {
-        setOpen((open) => !open);
+        if (isOpen) {
+          close();
+        } else {
+          setOpen(true);
+        }
       }
     };
     window.addEventListener('keydown', handleKey);
     return () => {
       window.removeEventListener('keydown', handleKey);
     };
-  }, []);
+  }, [close, isOpen]);
 
   const inputPropsWithResultAndHistory: InputGroupProps2 = useMemo(() => {
     const placeholderCrumbs = (icon: IconName): JSX.Element => {
@@ -75,7 +87,7 @@ const CommandBarEngine: React.FC<CommandBarEngineProps> = ({ rootCommand }) => {
         if (commandHistory.length > 0) {
           popCommand();
         } else {
-          setOpen(false);
+          close();
         }
       }}
       items={commandResult.type === 'success' ? commandResult.value : []}
@@ -86,10 +98,7 @@ const CommandBarEngine: React.FC<CommandBarEngineProps> = ({ rootCommand }) => {
         if (selectedCommand.type === 'selector') {
           pushCommand(selectedCommand);
         } else {
-          Promise.resolve(selectedCommand.action()).then(() => {
-            setOpen(false);
-            setRootCommand(rootCommand);
-          });
+          Promise.resolve(selectedCommand.action(context)).then(close);
         }
       }}
       itemPredicate={(query, { title }) => includesIgnoreCase(title, query)}

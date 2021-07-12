@@ -2,19 +2,22 @@ import { useState, useEffect } from 'react';
 import { SelectorCommand, Command } from './command';
 import { Result, buildLoadingResult, buildSuccessResult, buildErrorResult } from '../../../utils/result';
 
-const useCommandEngine = (root: SelectorCommand) => {
+const useCommandEngine = <T,>(root: SelectorCommand<T>, context: T) => {
   const [current, setCurrent] = useState(root);
-  const [history, setHistory] = useState<SelectorCommand[]>([]);
-  const [result, setResult] = useState<Result<Command[], string>>(buildLoadingResult());
+  const [history, setHistory] = useState<SelectorCommand<T>[]>([]);
+  const [result, setResult] = useState<Result<Command<T>[], string>>(buildLoadingResult());
+
+  console.log('useCommand', root, current, result);
 
   useEffect(() => {
+    console.log('useEffect');
     setResult(buildLoadingResult());
-    Promise.resolve(current.options())
+    Promise.resolve(current.options(context))
       .then((options) => setResult(buildSuccessResult(options)))
       .catch(() => setResult(buildErrorResult('Error fetching')));
-  }, [current]);
+  }, [root, current, context]);
 
-  const push = (command: SelectorCommand): void => {
+  const push = (command: SelectorCommand<T>): void => {
     setCurrent(command);
     setHistory([current, ...history]);
   };
@@ -28,10 +31,10 @@ const useCommandEngine = (root: SelectorCommand) => {
     setHistory(rest);
   };
 
-  const setRoot = (root: SelectorCommand) => {
+  const setRoot = (root: SelectorCommand<T>) => {
     setCurrent(root);
     setHistory([]);
-    setResult(buildLoadingResult);
+    setResult(buildLoadingResult());
   };
 
   return {

@@ -1,13 +1,13 @@
-import { IAppConfigContext } from '../../hooks/useConfig';
+import { CommandContext } from '../CommandBar';
 import { ActionCommand } from '../engine/command';
 
-const buildToggleLocalizationAction = (configContext: IAppConfigContext): ActionCommand => ({
+const toggleLocalizationAction: ActionCommand<CommandContext> = {
   type: 'action',
   title: 'Toggle localization',
   key: 'toggleLocalization',
-  action: () => {
-    configContext.set('showLangKeys', !configContext.config.showLangKeys);
+  action: ({ config }) => {
+    config.set('showLangKeys', !config.config.showLangKeys);
   },
-});
+};
 
-export { buildToggleLocalizationAction };
+export default toggleLocalizationAction;

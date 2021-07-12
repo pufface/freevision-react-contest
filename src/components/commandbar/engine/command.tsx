@@ -4,17 +4,17 @@ type CommandBase = {
   label?: string;
 };
 
-type Command = SelectorCommand | ActionCommand;
+type Command<T> = SelectorCommand<T> | ActionCommand<T>;
 
-type SelectorCommand = CommandBase & {
+type SelectorCommand<T> = CommandBase & {
   type: 'selector';
   placeHolder: string;
-  options: () => Promise<Command[]> | Command[];
+  options: (context: T) => Promise<Command<T>[]> | Command<T>[];
 };
 
-type ActionCommand = CommandBase & {
+type ActionCommand<T> = CommandBase & {
   type: 'action';
-  action: () => Promise<void> | void;
+  action: (context: T) => Promise<void> | void;
 };
 
 export type { Command, SelectorCommand, ActionCommand };

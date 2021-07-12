@@ -1,29 +1,18 @@
-import { History, ShowToaster } from '../CommandBar';
+import { CommandContext } from '../CommandBar';
 import { SelectorCommand } from '../engine/command';
-import { buildGoToPageSelector } from './goToPageSelector';
-import { buildChangeApiUrlSelector } from './changeApiUrlSelector';
-import { IAppConfigContext } from '../../hooks/useConfig';
-import { buildToggleLocalizationAction } from './toggleLocalizatonAction';
-import { buildBirdSelector } from './birdSelector';
-import { buildMultiLevelSelector } from './multiLevelSelector';
+import goToPageSelector from './goToPageSelector';
+import changeApiUrlSelector from './changeApiUrlSelector';
+import toggleLocalizationAction from './toggleLocalizatonAction';
+import birdSelector from './birdSelector';
+import multiLevelSelector from './multiLevelSelector';
 
-const buildRootSelector = (
-  history: History,
-  configContext: IAppConfigContext,
-  showToast: ShowToaster
-): SelectorCommand => ({
+const rootSelector: SelectorCommand<CommandContext> = {
   type: 'selector',
   title: '',
   key: 'root',
   label: '',
   placeHolder: 'Enter command...',
-  options: () => [
-    buildGoToPageSelector(history),
-    buildChangeApiUrlSelector(configContext),
-    buildToggleLocalizationAction(configContext),
-    buildBirdSelector(showToast),
-    buildMultiLevelSelector(showToast),
-  ],
-});
+  options: () => [goToPageSelector, changeApiUrlSelector, toggleLocalizationAction, birdSelector, multiLevelSelector],
+};
 
-export { buildRootSelector };
+export default rootSelector;

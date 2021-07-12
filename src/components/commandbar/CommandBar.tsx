@@ -1,12 +1,15 @@
 import { useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Position, Toaster } from '@blueprintjs/core';
-import { useConfig } from '../hooks/useConfig';
+import { IAppConfigContext, useConfig } from '../hooks/useConfig';
 import CommandBarEngine from './engine/CommandBarEngine';
-import { buildRootSelector } from './commands/rootSelector';
+import rootSelector from './commands/rootSelector';
 
-type History = ReturnType<typeof useHistory>;
-type ShowToaster = (text: string) => void;
+type CommandContext = {
+  history: ReturnType<typeof useHistory>;
+  config: IAppConfigContext;
+  showToast: (text: string) => void;
+};
 
 const AppToaster = Toaster.create({
   className: 'recipe-toaster',
@@ -16,13 +19,13 @@ const AppToaster = Toaster.create({
 const CommandBar = () => {
   const history = useHistory();
   const config = useConfig();
-  const rootCommand = useMemo(() => {
-    const showToast: ShowToaster = (text) => AppToaster.show({ message: text });
-    return buildRootSelector(history, config, showToast);
+  const context = useMemo(() => {
+    const showToast = (text: string) => AppToaster.show({ message: text });
+    return { history, config, showToast };
   }, [history, config]);
 
-  return <CommandBarEngine rootCommand={rootCommand} />;
+  return <CommandBarEngine rootCommand={rootSelector} context={context} />;
 };
 
 export default CommandBar;
-export type { History, ShowToaster };
+export type { CommandContext };
