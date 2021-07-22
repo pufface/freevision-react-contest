@@ -12,7 +12,6 @@ type CommandContext = {
 };
 
 const AppToaster = Toaster.create({
-  className: 'recipe-toaster',
   position: Position.TOP,
 });
 
