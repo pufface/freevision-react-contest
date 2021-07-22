@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { SelectorCommand, Command } from './command';
 import { Result, buildLoadingResult, buildSuccessResult, buildErrorResult } from '../../../utils/result';
 
@@ -14,34 +14,36 @@ const useCommandEngine = <T,>(root: SelectorCommand<T>, context: T) => {
       .catch(() => setResult(buildErrorResult('Error fetching')));
   }, [current, context]);
 
-  const push = (command: SelectorCommand<T>): void => {
-    setCurrent(command);
-    setHistory([current, ...history]);
-  };
+  return useMemo(() => {
+    const push = (command: SelectorCommand<T>): void => {
+      setCurrent(command);
+      setHistory([current, ...history]);
+    };
 
-  const pop = (): void => {
-    const [first, ...rest] = history;
-    if (!first) {
-      return;
-    }
-    setCurrent(first);
-    setHistory(rest);
-  };
+    const pop = (): void => {
+      const [first, ...rest] = history;
+      if (!first) {
+        return;
+      }
+      setCurrent(first);
+      setHistory(rest);
+    };
 
-  const setRoot = (root: SelectorCommand<T>) => {
-    setCurrent({ ...root });
-    setHistory([]);
-    setResult(buildLoadingResult());
-  };
+    const setRoot = (root: SelectorCommand<T>) => {
+      setCurrent({ ...root });
+      setHistory([]);
+      setResult(buildLoadingResult());
+    };
 
-  return {
-    command: current,
-    commandResult: result,
-    commandHistory: history,
-    pushCommand: push,
-    popCommand: pop,
-    setRootCommand: setRoot,
-  };
+    return {
+      command: current,
+      commandResult: result,
+      commandHistory: history,
+      pushCommand: push,
+      popCommand: pop,
+      setRootCommand: setRoot,
+    };
+  }, [current, history, result]);
 };
 
 export default useCommandEngine;
