@@ -11,7 +11,7 @@ const buildAction = (title: string, url: string): ActionCommand<CommandContext> 
 });
 
 const goToPageSelector: SelectorCommand<CommandContext> = {
-  type: 'selector',
+  type: 'simpleSelector',
   title: 'Go to',
   key: 'goTo',
   placeHolder: 'Select page...',

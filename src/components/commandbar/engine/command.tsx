@@ -4,10 +4,19 @@ type CommandBase = {
   label?: string;
 };
 
-type SelectorCommand<T> = CommandBase & {
-  type: 'selector';
+type SimpleSelectorCommand<T> = CommandBase & {
+  type: 'simpleSelector';
   placeHolder: string;
-  options: (context: T) => Promise<Command<T>[]> | Command<T>[];
+  options: () => Command<T>[];
+};
+
+type QuerySelectorCommand<T> = CommandBase & {
+  type: 'querySelector';
+  placeHolder: string;
+  options: (query: string) => Promise<{
+    totalCount: number;
+    options: Command<T>[];
+  }>;
 };
 
 type ActionCommand<T> = CommandBase & {
@@ -15,6 +24,8 @@ type ActionCommand<T> = CommandBase & {
   action: (context: T) => Promise<void> | void;
 };
 
+type SelectorCommand<T> = SimpleSelectorCommand<T> | QuerySelectorCommand<T>;
+
 type Command<T> = SelectorCommand<T> | ActionCommand<T>;
 
-export type { Command, SelectorCommand, ActionCommand };
+export type { Command, SelectorCommand, ActionCommand, SimpleSelectorCommand, QuerySelectorCommand };

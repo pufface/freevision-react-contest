@@ -15,7 +15,7 @@ const buildAction = (title: string, url?: string): ActionCommand<CommandContext>
   },
 });
 const changeApiUrlSelector: SelectorCommand<CommandContext> = {
-  type: 'selector',
+  type: 'simpleSelector',
   title: 'Change API url',
   key: 'changeApiUrl',
   placeHolder: 'Select environment...',

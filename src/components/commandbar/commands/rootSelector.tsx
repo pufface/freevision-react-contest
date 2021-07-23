@@ -7,7 +7,7 @@ import birdSelector from './birdSelector';
 import multiLevelSelector from './multiLevelSelector';
 
 const rootSelector: SelectorCommand<CommandContext> = {
-  type: 'selector',
+  type: 'simpleSelector',
   title: '',
   key: 'root',
   label: '',

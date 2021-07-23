@@ -28,17 +28,24 @@ const buildAction = ({ id, title }: Bird): ActionCommand<CommandContext> => ({
   },
 });
 
+const FETCH_LIMIT = 100;
+
 const birdSelector: SelectorCommand<CommandContext> = {
-  type: 'selector',
+  type: 'querySelector',
   title: 'Show birds',
   key: 'showBirds',
   placeHolder: 'Select bird...',
-  options: async () => {
-    const url = 'http://localhost:3001/birds';
-    const result = await fetch(url);
+  options: async (query: string) => {
+    const urlParams = new URLSearchParams({ q: query, _limit: String(FETCH_LIMIT) });
+    const result = await fetch(`http://localhost:3001/birds?${urlParams}`);
     const objects = await result.json();
     const birds = objects.map(parseBird);
-    return birds.map(buildAction);
+    const options = birds.map(buildAction);
+    const totalCount = Number(result.headers.get('X-Total-Count') || options.length);
+    return {
+      options,
+      totalCount,
+    };
   },
 };
 

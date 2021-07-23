@@ -20,14 +20,14 @@ const buildBinarySelect = (items: string[]): Command<CommandContext>[] => {
   const [first, second] = halfSplitter(items);
   return [
     {
-      type: 'selector',
+      type: 'simpleSelector',
       title: `Select ${first[0]} - ${first[first.length - 1]}`,
       key: `Select ${first[0]} - ${first[first.length - 1]}`,
       placeHolder: 'Select option...',
       options: () => buildBinarySelect(first),
     },
     {
-      type: 'selector',
+      type: 'simpleSelector',
       title: `Select ${second[0]} - ${second[second.length - 1]}`,
       key: `Select ${second[0]} - ${second[second.length - 1]}`,
       placeHolder: 'Select option...',
@@ -66,7 +66,7 @@ const alphabet = [
 ];
 
 const multiLevelSelector: SelectorCommand<CommandContext> = {
-  type: 'selector',
+  type: 'simpleSelector',
   title: `Binary selector`,
   key: `binarySelector`,
   placeHolder: 'Select option...',
