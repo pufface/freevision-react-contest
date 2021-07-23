@@ -2,16 +2,6 @@
 
 Like contests, want to win also like beer :)
 
-In general:
-
-- nice challenge
-- some tricky catches
-- some serious bad designs
-- a few of spaghetti
-- lot of nits and notes can be ignored
-- some comments can be invalid as I do not know original requirements and/or project code conventions
-- Omnibar component from UX perspective is better to keep flat (like original example, also mac spotlight is flat). For multilevel nesting of commands would be better entirely different component with some navigation between levels and showing previous choice/choices and so on. For current component design, one or two levels of commands are acceptable, more levels can be hard to keep in mind from user perspective. Also it is not optimal for mobile usage, as whole blueprint.
-
 ## Part 1
 
 Review in PR: https://github.com/pufface/freevision-react-contest/pull/1#pullrequestreview-699006579
@@ -23,18 +13,35 @@ Tag of comments:
 - `[normal]`: bugs, bad implementation, bad usage, missing something (should be fixed)
 - `[design]`: major things that have bigger impact on codebase, like bad design or structure (should be fixed and reconsidered again)
 
+Notes to review:
+
+- nice challenge
+- some tricky catches
+- some serious bad designs
+- a few of spaghetti
+- lot of nits and notes
+- some comments can be invalid as I do not know original requirements and/or project code conventions
+
 ## Part 2
 
 Solution is pushed to: https://github.com/pufface/freevision-react-contest/tree/contest
 
-Comments to solution:
+Notes to solution:
 
-- new Highlighter logic
-- new CommandBar
-  - extracted commands logic to useCommandEngine hook
+- omnibar thoughts
+  - How many levels of command nesting is reasonable? From UX perspective I think is reasonable one or two levels of nesting commands, idealy keep it flat. More levels can be tedious and hard to navigate and they need some kind of navigation and showing current command and history of previous choices.
+  - Omnibar is not optimal for mobile usage (but usable), comes together with bluprint design and goals. Text input is not fully responsive and also text searching is not best experience on mobile.
+  - Searching command options on server is resonable for huge amount of options. For smaller number of options (like current 40KB json, about 1000 options) might be better to fetch it all and do filtering on client. According assignemnt, search should be done on server.
+  - Pagination comes to mind together with searhing larger number of options. But again, it wouldn't be best experience introducing paginaiton in current design of omnibar component.
+  - How many action contexts is need? Relate to omnibar design and its purpose, number of context should be limited as well as number of types of commands.
+  - Omnibar should be kept simple. If there are other requirements leading to more complexity or difficult UX, consider entirely different component design.
+- new Highlighter component
+- new CommandBar component
+  - extracted command options fetching logic to useCommandFetcher hook
+  - extracted command history to useCommandHistory hook
   - blueprint omnibar works only as renderer with search logic
-  - birds fetching is done as whole json, partial fetching for 40KB is overkill
-  - birds filtering is done locally
-  - added commands multilevel support with history and go back via esc
+  - birds searching is done remotely on server with debounce optimalization and limitation of number of items
+  - added commands multilevel support with history and go back via esc or click
   - tuned types Result and Command to support exhaustive switches by using discriminated unions
-  - passing context to command actions individually, it is kind of tricky, wanted to separate CommandBar from command action contexts
+  - data structures are designed with imposibility of representation of imposible states
+  - passing command actions context is one and same for all actions, comming out from thoughts above
