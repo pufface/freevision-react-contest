@@ -3,7 +3,7 @@ import { Omnibar } from '@blueprintjs/select';
 import { IconName, Icon, Menu, MenuItem, InputGroupProps2 } from '@blueprintjs/core';
 import Highlighter from '../../Highlighter';
 import useCommandHistory from './useCommandHistory';
-import useCommandFetcher, { FetchedResult } from './useCommandFetcher';
+import useCommandFetcher from './useCommandFetcher';
 import { Command, SelectorCommand } from './command';
 
 type CommandBarEngineProps<T> = {
@@ -75,7 +75,7 @@ const CommandBarEngine = <T,>({ rootCommand, context }: CommandBarEngineProps<T>
     }
   }, [currentCommand, historicCommands, optionsResult]);
 
-  const itemsResult: FetchedResult<T> = useMemo(() => {
+  const itemsResult = useMemo(() => {
     return optionsResult.type === 'success'
       ? optionsResult.value
       : {
