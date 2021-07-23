@@ -117,7 +117,7 @@ const CommandBarEngine = <T,>({ rootCommand, context }: CommandBarEngineProps<T>
         }
       }}
       query={query}
-      onQueryChange={setSearchQuery}
+      onQueryChange={setQuery}
       itemListRenderer={({ renderItem, items, query, itemsParentRef }) => {
         if (items.length === 0 && query === '') {
           return (
