@@ -15,34 +15,39 @@ const useCommandFetcher = <T,>(command: SelectorCommand<T>, initialQuery: string
   const [result, setResult] = useState<Result<Options<T>, string>>(LoadingResult());
   const [query, setQuery] = useState(initialQuery);
 
-  useEffect(() => {
-    const fetchQueryOptions = (selector: QuerySelectorCommand<T>): Promise<Options<T>> => {
-      return selector.options(query);
-    };
-
-    const getSimpleOptions = (selector: SimpleSelectorCommand<T>): Options<T> => {
-      const options = selector.options().filter(({ title }) => includesIgnoreCase(title, query));
-      return {
-        totalCount: options.length,
-        options,
+  const optionsFetcher = useMemo(() => {
+    const getSimpleOptions = (selector: SimpleSelectorCommand<T>) => {
+      const allOptions = selector.options();
+      return (searchQuery: string) => {
+        const filteredOptions = allOptions.filter(({ title }) => includesIgnoreCase(title, searchQuery));
+        return {
+          totalCount: filteredOptions.length,
+          options: filteredOptions,
+        };
       };
     };
-
-    Promise.resolve()
-      .then(() => setResult(LoadingResult()))
-      .then(() => (command.type === 'simpleSelector' ? getSimpleOptions(command) : fetchQueryOptions(command)))
-      .then((result) => setResult(SuccessResult(result)))
-      .catch(() => setResult(ErrorResult('Error fetching')));
-  }, [command, query]);
+    const fetchQueryOptions = (selector: QuerySelectorCommand<T>) => (searchQuery: string) =>
+      selector.options(searchQuery);
+    return command.type === 'simpleSelector' ? getSimpleOptions(command) : fetchQueryOptions(command);
+  }, [command]);
 
   const setQueryOptimized = useMemo(() => {
     return command.type === 'simpleSelector' ? setQuery : debounce(setQuery, QUERY_DEBOUNCE_MS);
   }, [command.type]);
 
+  useEffect(() => {
+    Promise.resolve()
+      .then(() => setResult(LoadingResult()))
+      .then(() => optionsFetcher(query))
+      .then((options) => setResult(SuccessResult(options)))
+      .catch(() => setResult(ErrorResult('Error fetching')));
+  }, [optionsFetcher, query]);
+
   return {
-    optionsResult: result,
-    setOptionsQuery: setQueryOptimized,
+    result,
+    setQuery: setQueryOptimized,
   };
 };
 
 export default useCommandFetcher;
+export type { Options };

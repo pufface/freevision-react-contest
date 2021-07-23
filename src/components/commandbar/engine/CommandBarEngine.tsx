@@ -3,7 +3,7 @@ import { Omnibar } from '@blueprintjs/select';
 import { IconName, Icon, Menu, MenuItem, InputGroupProps2 } from '@blueprintjs/core';
 import Highlighter from '../../Highlighter';
 import useCommandHistory from './useCommandHistory';
-import useCommandFetcher from './useCommandFetcher';
+import useCommandFetcher, { Options } from './useCommandFetcher';
 import { Command, SelectorCommand } from './command';
 
 type CommandBarEngineProps<T> = {
@@ -14,7 +14,7 @@ type CommandBarEngineProps<T> = {
 const CommandBarEngine = <T,>({ rootCommand, context }: CommandBarEngineProps<T>) => {
   const [isOpen, setOpen] = useState(false);
   const { currentCommand, historicCommands, pushCommand, popCommand, resetHistory } = useCommandHistory(rootCommand);
-  const { optionsResult, setOptionsQuery } = useCommandFetcher(currentCommand, '');
+  const { result, setQuery } = useCommandFetcher(currentCommand, '');
 
   const CommandOmmibar = Omnibar.ofType<Command<T>>();
 
@@ -39,6 +39,19 @@ const CommandBarEngine = <T,>({ rootCommand, context }: CommandBarEngineProps<T>
     };
   }, [close, isOpen]);
 
+  const currentItems: Options<T> = useMemo(() => {
+    switch (result.type) {
+      case 'success':
+        return result.value;
+      case 'loading':
+      case 'error':
+        return {
+          totalCount: 0,
+          options: [],
+        };
+    }
+  }, [result]);
+
   const inputPropsWithResultAndHistory: InputGroupProps2 = useMemo(() => {
     const placeholderCrumbs = (icon: IconName): JSX.Element => {
       const [prev, prevPrev, prevPrevPrev] = historicCommands;
@@ -53,7 +66,7 @@ const CommandBarEngine = <T,>({ rootCommand, context }: CommandBarEngineProps<T>
         </div>
       );
     };
-    switch (optionsResult.type) {
+    switch (result.type) {
       case 'loading':
         return {
           leftElement: placeholderCrumbs('time'),
@@ -70,19 +83,10 @@ const CommandBarEngine = <T,>({ rootCommand, context }: CommandBarEngineProps<T>
         return {
           leftElement: placeholderCrumbs('error'),
           leftIcon: null,
-          placeholder: optionsResult.error,
+          placeholder: result.error,
         };
     }
-  }, [currentCommand, historicCommands, optionsResult]);
-
-  const itemsResult = useMemo(() => {
-    return optionsResult.type === 'success'
-      ? optionsResult.value
-      : {
-          totalCount: 0,
-          options: [],
-        };
-  }, [optionsResult]);
+  }, [currentCommand, historicCommands, result]);
 
   return (
     <CommandOmmibar
@@ -95,7 +99,7 @@ const CommandBarEngine = <T,>({ rootCommand, context }: CommandBarEngineProps<T>
           close();
         }
       }}
-      items={itemsResult.options}
+      items={currentItems.options}
       resetOnSelect
       resetOnQuery
       itemsEqual="key"
@@ -106,7 +110,7 @@ const CommandBarEngine = <T,>({ rootCommand, context }: CommandBarEngineProps<T>
           Promise.resolve(selectedCommand.action(context)).then(close);
         }
       }}
-      onQueryChange={setOptionsQuery}
+      onQueryChange={setQuery}
       itemListRenderer={({ renderItem, items, query }) => {
         if (items.length === 0 && query === '') {
           return (
@@ -125,10 +129,10 @@ const CommandBarEngine = <T,>({ rootCommand, context }: CommandBarEngineProps<T>
         return (
           <Menu>
             {items.map(renderItem)}
-            {itemsResult.totalCount !== items.length && (
+            {currentItems.totalCount !== items.length && (
               <MenuItem
                 disabled={true}
-                text={`Showing first ${items.length}/${itemsResult.totalCount} results, please specify search query`}
+                text={`Showing first ${items.length}/${currentItems.totalCount} results, please specify search query`}
               />
             )}
           </Menu>
