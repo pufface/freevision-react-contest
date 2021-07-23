@@ -111,23 +111,23 @@ const CommandBarEngine = <T,>({ rootCommand, context }: CommandBarEngineProps<T>
         }
       }}
       onQueryChange={setQuery}
-      itemListRenderer={({ renderItem, items, query }) => {
+      itemListRenderer={({ renderItem, items, query, itemsParentRef }) => {
         if (items.length === 0 && query === '') {
           return (
-            <Menu>
+            <Menu ulRef={itemsParentRef}>
               <MenuItem disabled={true} text="No commands are available" />
             </Menu>
           );
         }
         if (items.length === 0 && query !== '') {
           return (
-            <Menu>
+            <Menu ulRef={itemsParentRef}>
               <MenuItem disabled={true} text={`No commands match search criteria '${query}'`} />
             </Menu>
           );
         }
         return (
-          <Menu>
+          <Menu ulRef={itemsParentRef}>
             {items.map(renderItem)}
             {currentItems.totalCount !== items.length && (
               <MenuItem
