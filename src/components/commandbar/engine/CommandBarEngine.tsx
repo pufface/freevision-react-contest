@@ -14,7 +14,7 @@ type CommandBarEngineProps<T> = {
 const CommandBarEngine = <T,>({ rootCommand, context }: CommandBarEngineProps<T>) => {
   const [isOpen, setOpen] = useState(false);
   const { currentCommand, historicCommands, pushCommand, popCommand, resetHistory } = useCommandHistory(rootCommand);
-  const { result, setQuery } = useCommandFetcher(currentCommand, '');
+  const { result, setSearchQuery } = useCommandFetcher(currentCommand, '');
 
   const CommandOmmibar = Omnibar.ofType<Command<T>>();
 
@@ -110,7 +110,7 @@ const CommandBarEngine = <T,>({ rootCommand, context }: CommandBarEngineProps<T>
           Promise.resolve(selectedCommand.action(context)).then(close);
         }
       }}
-      onQueryChange={setQuery}
+      onQueryChange={setSearchQuery}
       itemListRenderer={({ renderItem, items, query, itemsParentRef }) => {
         if (items.length === 0 && query === '') {
           return (

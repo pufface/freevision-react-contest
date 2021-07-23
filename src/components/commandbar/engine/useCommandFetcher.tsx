@@ -45,7 +45,7 @@ const useCommandFetcher = <T,>(command: SelectorCommand<T>, initialQuery: string
 
   return {
     result,
-    setQuery: setQueryOptimized,
+    setSearchQuery: setQueryOptimized,
   };
 };
 
