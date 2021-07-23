@@ -26,8 +26,10 @@ const useCommandFetcher = <T,>(command: SelectorCommand<T>, initialQuery: string
         };
       };
     };
+
     const fetchQueryOptions = (selector: QuerySelectorCommand<T>) => (searchQuery: string) =>
       selector.options(searchQuery);
+
     return command.type === 'simpleSelector' ? getSimpleOptions(command) : fetchQueryOptions(command);
   }, [command]);
 
