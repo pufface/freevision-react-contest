@@ -23,15 +23,15 @@ const buildBinarySelect = (items: string[]): Command<CommandContext>[] => {
       type: 'selector',
       title: `Select ${first[0]} - ${first[first.length - 1]}`,
       key: `Select ${first[0]} - ${first[first.length - 1]}`,
-      placeHolder: 'Binary select',
-      options: ({ showToast }) => buildBinarySelect(first),
+      placeHolder: 'Select option...',
+      options: () => buildBinarySelect(first),
     },
     {
       type: 'selector',
       title: `Select ${second[0]} - ${second[second.length - 1]}`,
       key: `Select ${second[0]} - ${second[second.length - 1]}`,
-      placeHolder: 'Binary select',
-      options: ({ showToast }) => buildBinarySelect(second),
+      placeHolder: 'Select option...',
+      options: () => buildBinarySelect(second),
     },
   ];
 };
