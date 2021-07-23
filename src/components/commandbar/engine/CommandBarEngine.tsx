@@ -13,6 +13,7 @@ type CommandBarEngineProps<T> = {
 
 const CommandBarEngine = <T,>({ rootCommand, context }: CommandBarEngineProps<T>) => {
   const [isOpen, setOpen] = useState(false);
+  const [query, setQuery] = useState('');
   const { currentCommand, historicCommands, pushCommand, popCommand, resetHistory } = useCommandHistory(rootCommand);
   const { result, setSearchQuery } = useCommandFetcher(currentCommand, '');
 
@@ -38,6 +39,10 @@ const CommandBarEngine = <T,>({ rootCommand, context }: CommandBarEngineProps<T>
       window.removeEventListener('keydown', handleKey);
     };
   }, [close, isOpen]);
+
+  useEffect(() => {
+    setSearchQuery(query);
+  }, [query, setSearchQuery]);
 
   const currentItems: Options<T> = useMemo(() => {
     switch (result.type) {
@@ -95,6 +100,7 @@ const CommandBarEngine = <T,>({ rootCommand, context }: CommandBarEngineProps<T>
       onClose={() => {
         if (historicCommands.length > 0) {
           popCommand();
+          setQuery('');
         } else {
           close();
         }
@@ -110,6 +116,7 @@ const CommandBarEngine = <T,>({ rootCommand, context }: CommandBarEngineProps<T>
           Promise.resolve(selectedCommand.action(context)).then(close);
         }
       }}
+      query={query}
       onQueryChange={setSearchQuery}
       itemListRenderer={({ renderItem, items, query, itemsParentRef }) => {
         if (items.length === 0 && query === '') {
