@@ -12,12 +12,12 @@ type CommandBarEngineProps<T> = {
 };
 
 const CommandBarEngine = <T,>({ rootCommand, context }: CommandBarEngineProps<T>) => {
+  const CommandOmmibar = Omnibar.ofType<Command<T>>();
+
   const [isOpen, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const { currentCommand, historicCommands, pushCommand, popCommand, resetHistory } = useCommandHistory(rootCommand);
   const result = useCommandFetcher(currentCommand, query);
-
-  const CommandOmmibar = Omnibar.ofType<Command<T>>();
 
   useEffect(() => {
     const handleKey = (ev: KeyboardEvent) => {
@@ -33,7 +33,7 @@ const CommandBarEngine = <T,>({ rootCommand, context }: CommandBarEngineProps<T>
     };
   }, [resetHistory]);
 
-  const currentItems: Options<T> = useMemo(() => {
+  const currentOptions: Options<T> = useMemo(() => {
     switch (result.type) {
       case 'success':
         return result.value;
@@ -94,7 +94,7 @@ const CommandBarEngine = <T,>({ rootCommand, context }: CommandBarEngineProps<T>
           setOpen(false);
         }
       }}
-      items={currentItems.options}
+      items={currentOptions.options}
       itemsEqual="key"
       onItemSelect={(selectedCommand) => {
         setQuery('');
@@ -124,10 +124,10 @@ const CommandBarEngine = <T,>({ rootCommand, context }: CommandBarEngineProps<T>
         return (
           <Menu ulRef={itemsParentRef}>
             {items.map(renderItem)}
-            {currentItems.totalCount !== items.length && (
+            {currentOptions.totalCount !== items.length && (
               <MenuItem
                 disabled={true}
-                text={`Showing first ${items.length}/${currentItems.totalCount} results, please specify search query`}
+                text={`Showing first ${items.length}/${currentOptions.totalCount} results, please specify search query`}
               />
             )}
           </Menu>
