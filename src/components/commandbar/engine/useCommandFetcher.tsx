@@ -4,7 +4,7 @@ import { Result, LoadingResult, SuccessResult, ErrorResult } from '../../../util
 import { includesIgnoreCase } from '../../../utils/stringUtils';
 import debounce from 'debounce-promise';
 
-const DEBOUNCE_WAIT_MS = 250;
+const DEBOUNCE_WAIT_MS = 100;
 
 type Options<T> = {
   totalCount: number;
