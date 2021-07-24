@@ -13,7 +13,6 @@ type CommandBarEngineProps<T> = {
 
 const CommandBarEngine = <T,>({ rootCommand, context }: CommandBarEngineProps<T>) => {
   const CommandOmmibar = Omnibar.ofType<Command<T>>();
-
   const [isOpen, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const { currentCommand, historicCommands, pushCommand, popCommand, resetHistory } = useCommandHistory(rootCommand);
