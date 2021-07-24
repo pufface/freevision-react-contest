@@ -3,7 +3,7 @@ import { Omnibar } from '@blueprintjs/select';
 import { IconName, Icon, Menu, MenuItem, InputGroupProps2 } from '@blueprintjs/core';
 import Highlighter from '../../Highlighter';
 import useCommandHistory from './useCommandHistory';
-import useCommandFetcher, { Options } from './useCommandFetcher';
+import useCommandFetcher, { emptyOptions, Options } from './useCommandFetcher';
 import { Command, SelectorCommand } from './command';
 
 type CommandBarEngineProps<T> = {
@@ -18,6 +18,7 @@ const CommandBarEngine = <T,>({ rootCommand, context }: CommandBarEngineProps<T>
   const [query, setQuery] = useState('');
   const { currentCommand, historicCommands, pushCommand, popCommand, resetHistory } = useCommandHistory(rootCommand);
   const result = useCommandFetcher(currentCommand, query);
+  const [currentOptions, setCurrentOpitons] = useState<Options<T>>(emptyOptions());
 
   useEffect(() => {
     const handleKey = (ev: KeyboardEvent) => {
@@ -33,16 +34,15 @@ const CommandBarEngine = <T,>({ rootCommand, context }: CommandBarEngineProps<T>
     };
   }, [resetHistory]);
 
-  const currentOptions: Options<T> = useMemo(() => {
-    switch (result.type) {
-      case 'success':
-        return result.value;
-      case 'loading':
-      case 'error':
-        return {
-          totalCount: 0,
-          options: [],
-        };
+  useEffect(() => {
+    setCurrentOpitons(emptyOptions());
+  }, [currentCommand]);
+
+  useEffect(() => {
+    if (result.type === 'success') {
+      setCurrentOpitons(result.value);
+    } else if (result.type === 'error') {
+      setCurrentOpitons(emptyOptions());
     }
   }, [result]);
 

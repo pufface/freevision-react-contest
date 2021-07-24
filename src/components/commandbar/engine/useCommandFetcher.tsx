@@ -11,6 +11,11 @@ type Options<T> = {
   options: Command<T>[];
 };
 
+const emptyOptions = <T,>(): Options<T> => ({
+  totalCount: 0,
+  options: [],
+});
+
 const useCommandFetcher = <T,>(command: SelectorCommand<T>, query: string) => {
   const [result, setResult] = useState<Result<Options<T>, string>>(LoadingResult());
 
@@ -54,4 +59,5 @@ const useCommandFetcher = <T,>(command: SelectorCommand<T>, query: string) => {
 };
 
 export default useCommandFetcher;
+export { emptyOptions };
 export type { Options };
