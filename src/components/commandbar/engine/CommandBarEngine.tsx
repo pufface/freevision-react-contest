@@ -22,6 +22,7 @@ const CommandBarEngine = <T,>({ rootCommand, context }: CommandBarEngineProps<T>
   const close = useCallback(() => {
     setOpen(false);
     resetHistory();
+    setQuery('');
   }, [resetHistory]);
 
   useEffect(() => {
