@@ -19,27 +19,19 @@ const CommandBarEngine = <T,>({ rootCommand, context }: CommandBarEngineProps<T>
 
   const CommandOmmibar = Omnibar.ofType<Command<T>>();
 
-  const close = useCallback(() => {
-    setOpen(false);
-    resetHistory();
-    setQuery('');
-  }, [resetHistory]);
-
   useEffect(() => {
     const handleKey = (ev: KeyboardEvent) => {
       if (ev.code === 'Period' && ev.ctrlKey) {
-        if (isOpen) {
-          close();
-        } else {
-          setOpen(true);
-        }
+        setOpen((open) => !open);
+        setQuery('');
+        resetHistory();
       }
     };
     window.addEventListener('keydown', handleKey);
     return () => {
       window.removeEventListener('keydown', handleKey);
     };
-  }, [close, isOpen]);
+  }, [resetHistory]);
 
   const currentItems: Options<T> = useMemo(() => {
     switch (result.type) {
@@ -95,22 +87,21 @@ const CommandBarEngine = <T,>({ rootCommand, context }: CommandBarEngineProps<T>
       inputProps={inputPropsWithResultAndHistory}
       isOpen={isOpen}
       onClose={() => {
+        setQuery('');
         if (historicCommands.length > 0) {
           popCommand();
-          setQuery('');
         } else {
-          close();
+          setOpen(false);
         }
       }}
       items={currentItems.options}
-      resetOnSelect
-      resetOnQuery
       itemsEqual="key"
       onItemSelect={(selectedCommand) => {
+        setQuery('');
         if (selectedCommand.type === 'simpleSelector' || selectedCommand.type === 'querySelector') {
           pushCommand(selectedCommand);
         } else {
-          Promise.resolve(selectedCommand.action(context)).then(close);
+          Promise.resolve(selectedCommand.action(context)).then(() => setOpen(false));
         }
       }}
       query={query}
