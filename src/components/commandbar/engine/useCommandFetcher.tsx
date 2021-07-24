@@ -32,12 +32,11 @@ const useCommandFetcher = <T,>(command: SelectorCommand<T>, query: string) => {
     return (selector: SimpleSelectorCommand<T>, searchQuery: string) => {
       const allOptions = selector.options();
       const filteredOptions = allOptions.filter(({ title }) => includesIgnoreCase(title, searchQuery));
-      setResult(
-        SuccessResult({
-          totalCount: filteredOptions.length,
-          options: filteredOptions,
-        })
-      );
+      const options = {
+        totalCount: filteredOptions.length,
+        options: filteredOptions,
+      };
+      setResult(SuccessResult(options));
     };
   }, []);
 
