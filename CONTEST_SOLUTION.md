@@ -40,7 +40,7 @@ Notes to solution:
   - extracted command options fetching logic to useCommandFetcher hook
   - extracted command history to useCommandHistory hook
   - blueprint omnibar works only as renderer with search logic
-  - birds searching is done remotely on server with debounce optimalization and limitation of number of items
+  - birds searching is done remotely on server with debounce optimalization, response items limitation and race condition free
   - added commands multilevel support with history and go back via esc or click
   - tuned types Result and Command to support exhaustive switches by using discriminated unions
   - data structures are designed with imposibility of representation of imposible states
