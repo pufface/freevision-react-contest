@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { Omnibar } from '@blueprintjs/select';
-import { IconName, Icon, Menu, MenuItem, InputGroupProps2 } from '@blueprintjs/core';
+import { IconName, Icon, Menu, MenuItem } from '@blueprintjs/core';
 import Highlighter from '../../Highlighter';
 import useCommandHistory from './useCommandHistory';
 import useCommandFetcher, { emptyOptions, Options } from './useCommandFetcher';
@@ -45,7 +45,7 @@ const CommandBarEngine = <T,>({ rootCommand, context }: CommandBarEngineProps<T>
     }
   }, [result]);
 
-  const inputPropsWithResultAndHistory: InputGroupProps2 = useMemo(() => {
+  const inputPropsWithResultAndHistory = useMemo(() => {
     const placeholderCrumbs = (icon: IconName): JSX.Element => {
       const [prev, prevPrev, prevPrevPrev] = historicCommands;
       return (

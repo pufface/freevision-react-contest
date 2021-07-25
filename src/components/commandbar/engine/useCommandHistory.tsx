@@ -20,7 +20,7 @@ const useCommandHistory = <T,>(root: SelectorCommand<T>) => {
       setHistory(rest);
     };
 
-    const reset = () => {
+    const reset = (): void => {
       setCurrent({ ...root });
       setHistory([]);
     };

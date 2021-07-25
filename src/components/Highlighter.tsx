@@ -6,7 +6,7 @@ type HighliterProps = {
   query: string;
 };
 
-const Highlighter: React.FC<HighliterProps> = ({ text, query }) => {
+const Highlighter = ({ text, query }: HighliterProps) => {
   const tokens = useMemo(() => {
     if (query.length === 0) {
       return text;
