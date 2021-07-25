@@ -10,7 +10,6 @@ const rootSelector: SelectorCommand<CommandContext> = {
   type: 'simpleSelector',
   title: '',
   key: 'root',
-  label: '',
   placeHolder: 'Enter command...',
   options: () => [goToPageSelector, changeApiUrlSelector, toggleLocalizationAction, birdSelector, multiLevelSelector],
 };
