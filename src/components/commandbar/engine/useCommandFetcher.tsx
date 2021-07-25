@@ -3,7 +3,7 @@ import { SelectorCommand, Command, QuerySelectorCommand, SimpleSelectorCommand }
 import { Result, LoadingResult, SuccessResult, ErrorResult } from '../../../utils/result';
 import { includesIgnoreCase } from '../../../utils/stringUtils';
 
-const QUERY_DEBOUNCE_WAIT_MS = 500;
+const QUERY_DEBOUNCE_WAIT_MS = 250;
 
 type Options<T> = {
   totalCount: number;
