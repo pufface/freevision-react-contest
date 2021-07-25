@@ -1,10 +1,9 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useRef } from 'react';
 import { SelectorCommand, Command, QuerySelectorCommand, SimpleSelectorCommand } from './command';
 import { Result, LoadingResult, SuccessResult, ErrorResult } from '../../../utils/result';
 import { includesIgnoreCase } from '../../../utils/stringUtils';
-import debounce from 'debounce-promise';
 
-const DEBOUNCE_WAIT_MS = 200;
+const QUERY_DEBOUNCE_WAIT_MS = 500;
 
 type Options<T> = {
   totalCount: number;
@@ -18,6 +17,7 @@ const emptyOptions = <T,>(): Options<T> => ({
 
 const useCommandFetcher = <T,>(command: SelectorCommand<T>, query: string) => {
   const [result, setResult] = useState<Result<Options<T>, string>>(LoadingResult());
+  const isFirstFetchForCommand = useRef(true);
 
   const optionsFetcher = useMemo(() => {
     const simpleSelectorFetcher = (command: SimpleSelectorCommand<T>) => {
@@ -34,26 +34,34 @@ const useCommandFetcher = <T,>(command: SelectorCommand<T>, query: string) => {
       return (query: string) => command.options(query);
     };
     return command.type === 'simpleSelector'
-      ? simpleSelectorFetcher(command)
-      : debounce(querySelectorFetcher(command), DEBOUNCE_WAIT_MS, { leading: true });
+      ? { fetcher: simpleSelectorFetcher(command), debounceWait: 0 }
+      : { fetcher: querySelectorFetcher(command), debounceWait: QUERY_DEBOUNCE_WAIT_MS };
+  }, [command]);
+
+  useEffect(() => {
+    isFirstFetchForCommand.current = true;
   }, [command]);
 
   useEffect(() => {
     let cancelled = false;
-    Promise.resolve()
-      .then(() => setResult(LoadingResult()))
-      .then(() => optionsFetcher(query))
-      .then((options) => {
+    const timeout = isFirstFetchForCommand.current ? 0 : optionsFetcher.debounceWait;
+    const timer = setTimeout(async () => {
+      try {
+        setResult(LoadingResult());
+        const options = await optionsFetcher.fetcher(query);
         if (!cancelled) {
           setResult(SuccessResult(options));
         }
-      })
-      .catch(() => {
+      } catch (e) {
         if (!cancelled) {
           setResult(ErrorResult('Error fetching'));
         }
-      });
+      }
+    }, timeout);
+    isFirstFetchForCommand.current = false;
+
     return () => {
+      clearTimeout(timer);
       cancelled = true;
     };
   }, [optionsFetcher, query]);
